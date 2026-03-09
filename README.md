@@ -55,3 +55,81 @@ The system allows users to log in either as an **employee** to view payroll deta
 The project plan and development tasks were discussed and organized internally by the team during the development process.
 
 ---
+
+## ▶️ How to Run the Program
+
+Follow these steps to run the MotorPH Automatic Payroll System.
+
+### 1. Open the Project
+Download or clone the repository and open the project using **NetBeans IDE**.
+
+### 2. Verify Project Files
+Make sure the following files are included in the project:
+
+- `src/` – contains the Java source code
+- `AttendanceRecords.csv` – contains employee attendance data
+- `EmployeeDetails.csv` – contains employee information
+- `nbproject/` – NetBeans project configuration files
+- `build.xml` – project build configuration
+- `manifest.mf` – project manifest file
+
+### 3. Run the Program
+1. Open the project in **NetBeans**.
+2. Locate the main file inside the `src` folder:
+
+```
+src/motorph/motorph_automatic_payroll_system/MotorPH_Automatic_Payroll_System.java
+```
+
+3. Right-click the file and select **Run File**, or run the project normally.
+
+### 4. Login to the System
+
+When the program starts, the **Login Account Menu** will appear.
+
+Use the following credentials:
+
+Employee Account  
+Username: `employee`  
+Password: `12345`
+
+Payroll Account  
+Username: `payroll`  
+Password: `12345`
+
+### 5. Employee Menu
+
+If logged in as **employee**, you can:
+
+- Enter your **Employee ID**
+- View employee information such as:
+  - Employee Number
+  - Name
+  - Birthday
+  - Hourly Rate
+
+### 6. Payroll Menu
+
+If logged in as **payroll**, you can:
+
+1. **Process payroll for one employee**
+   - Enter the employee ID
+   - The system will display payroll details for each month
+
+2. **Process payroll for all employees**
+   - The system will display payroll records for every employee
+
+### 7. Payroll Calculations
+
+The program automatically calculates:
+
+- Total working hours
+- Gross salary
+- Government deductions:
+  - SSS
+  - PhilHealth
+  - Pag-IBIG
+  - Withholding Tax
+- Net salary
+
+Payroll is displayed per **cutoff period (1–15 and 16–31)** and shows the **total monthly net salary**.
