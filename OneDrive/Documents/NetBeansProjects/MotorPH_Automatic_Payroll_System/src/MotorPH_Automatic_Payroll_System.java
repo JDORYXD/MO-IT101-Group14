@@ -11,13 +11,15 @@ package motorph.motorph_automatic_payroll_system;
 import java.io.*;
 import java.util.Scanner;
 public class MotorPH_Automatic_Payroll_System {
+    
+    //declaring global scanner for whole program
     static Scanner input = new Scanner (System.in);
     
 
     //------declaring global variables using arrays-------------//
 
     // Maximum number of employees the system can handle
-    static final int MAX = 1000; 
+    static final int MAX = 1000; //1000 max example only
 
     // Arrays to store employee basic information
     static String[] empID = new String[MAX];       // Stores employee IDs
@@ -673,4 +675,5 @@ public class MotorPH_Automatic_Payroll_System {
     
            
 }//end of MotorPH_Automatic_Payroll_System
+
 
