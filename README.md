@@ -13,7 +13,7 @@ Created the process for payroll calculations, which included figuring up net pay
 Implemented file handling and data processing, which included arranging and reading attendance and personnel information in order to calculate payroll and Ensured smooth integration of employee and attendance data.
 
 
-### Princess Jade Magahis – Presentation & Interface Support
+### Princess Jade Magahis – User Interaction and Testing
 Created the input handling and system menu so that users could control the software. System testing was also carried out to confirm that program functionality and payroll computations are accurate.
 
 
