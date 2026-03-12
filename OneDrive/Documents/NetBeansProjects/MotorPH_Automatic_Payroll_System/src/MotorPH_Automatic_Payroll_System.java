@@ -133,7 +133,12 @@ public class MotorPH_Automatic_Payroll_System {
         if (input.hasNextInt()) {
             choice = input.nextInt();
             input.nextLine();
-        } else {
+            
+        if (choice >=3){
+            System.out.println("!!!Invalid Choice,please choose only number 1 or 2 ");
+        }//end for
+        }//end for choice 
+        else {
             System.out.println("Invalid input! Numbers only.");
             input.next(); 
             continue;
@@ -465,16 +470,14 @@ public class MotorPH_Automatic_Payroll_System {
         
         System.out.printf("Total Hours Worked: %.2f\n", cutoff2HoursWorked);
         System.out.printf("Gross Salary: %.2f\n", cutoff2GrossSalary);
-
         System.out.println("\nEach Deduction:");
-        System.out.println("SSS: " + sss);
-        System.out.println("PhilHealth: " + phil);
-        System.out.println("Pag-IBIG: " + pagibig);
-        System.out.println("Tax: " + tax);
-
-        System.out.println("Total Deductions: " + totalDeduction);
+        System.out.printf("SSS: %.2f\n", sss);
+        System.out.printf("PhilHealth: %.2f\n" , phil);
+        System.out.printf("Pag-IBIG: %.2f\n" ,pagibig);
+        System.out.printf("Tax: %.2f\n",tax);
+        System.out.printf("Total Deductions: %.2f\n" ,totalDeduction);
         System.out.printf("Net Salary: %.2f\n", cutoff2Net);
-
+        
         // -------- TOTAL MONTHLY NET --------
         double totalMonthlyNet = cutoff1Net + cutoff2Net;
 
@@ -670,3 +673,4 @@ public class MotorPH_Automatic_Payroll_System {
     
            
 }//end of MotorPH_Automatic_Payroll_System
+
