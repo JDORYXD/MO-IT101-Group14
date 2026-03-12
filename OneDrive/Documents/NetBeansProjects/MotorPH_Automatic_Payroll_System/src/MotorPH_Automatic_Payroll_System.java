@@ -138,7 +138,7 @@ public class MotorPH_Automatic_Payroll_System {
             
         if (choice >=3){
             System.out.println("!!!Invalid Choice,please choose only number 1 or 2 ");
-        }//end for
+        }
         }//end for choice 
         else {
             System.out.println("Invalid input! Numbers only.");
@@ -675,5 +675,6 @@ public class MotorPH_Automatic_Payroll_System {
     
            
 }//end of MotorPH_Automatic_Payroll_System
+
 
 
