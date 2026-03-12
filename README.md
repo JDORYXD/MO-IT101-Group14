@@ -6,21 +6,15 @@ A Java-based automatic payroll system that manages employee information, attenda
 
 ## 📌 Team Details
 
-### Orlando Eria – Lead Developer
-- Designed and implemented the main program logic
-- Developed payroll processing and employee management features
-- Ensured accuracy of payroll calculations and overall system functionality
+### Orlando Eria – Payroll Computation
+Created the process for payroll calculations, which included figuring up net pay, deductions, gross pay, and employee worked hours. calculated salaries for the first and second payroll periods using the cutoff payroll processing.
 
-### John Vincent Illano – Repository Manager / Tester
-- Managed the GitHub repository and version control
-- Tested and debugged the program for correctness
-- Ensured smooth integration of employee and attendance data
+### John Vincent Illano – Data Processing / Tester
+Implemented file handling and data processing, which included arranging and reading attendance and personnel information in order to calculate payroll and Ensured smooth integration of employee and attendance data.
 
 
 ### Princess Jade Magahis – Presentation & Interface Support
-- Assisted in preparing project presentation materials and slides
-- Provided feedback on the system interface and user experience
-- Helped review the program flow for demonstration purposes
+Created the input handling and system menu so that users could control the software. System testing was also carried out to confirm that program functionality and payroll computations are accurate.
 
 
 ## 💻 Program Details
