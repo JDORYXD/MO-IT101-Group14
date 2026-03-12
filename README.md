@@ -7,10 +7,10 @@ A Java-based automatic payroll system that manages employee information, attenda
 ## 📌 Team Details
 
 ### Orlando Eria – Payroll Computation
-Created the process for payroll calculations, which included figuring up net pay, deductions, gross pay, and employee worked hours. calculated salaries for the first and second payroll periods using the cutoff payroll processing.
+Created the process for payroll calculations, which included figuring up net pay, deductions, gross pay and employee worked hours. Calculated salaries for the first and second payroll periods using the cutoff payroll processing.
 
 ### John Vincent Illano – Data Processing / Tester
-Implemented file handling and data processing, which included arranging and reading attendance and personnel information in order to calculate payroll and Ensured smooth integration of employee and attendance data.
+Implemented file handling and data processing, which included arranging and reading attendance and personnel information in order to calculate payroll and ensured smooth integration of employee and attendance data.
 
 
 ### Princess Jade Magahis – User Interaction and Testing
