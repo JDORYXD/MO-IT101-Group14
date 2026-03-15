@@ -121,7 +121,7 @@ public class MotorPH_Automatic_Payroll_System {
        
     } // end of main String []
 
-    //for EmployeeMenu()
+    //-----for EmployeeMenu Display-------//
     static void EmployeeMenu(){
     int choice = 0;
 
@@ -447,7 +447,7 @@ public class MotorPH_Automatic_Payroll_System {
         System.out.printf("Net Salary: %.2f\n", cutoff1Net);
 
         // -------- CUTOFF 2 --------
-        //Dispay result for cutoff2
+        //Display result for cutoff2
         System.out.println("\nCutoff Date: " + getMonthName(month) + " 16 to 30/31, " + payrollYear);
 
         double cutoff2HoursWorked = 0;
