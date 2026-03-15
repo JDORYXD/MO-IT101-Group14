@@ -55,6 +55,7 @@ The system allows users to log in either as an **employee** to view payroll deta
 
 The project plan and development tasks were discussed and organized internally by the team during the development process.
 
+https://docs.google.com/spreadsheets/d/13hAkgWlgDkVVQ-ZN1YtAlJpFTIJS0ifu/edit?usp=sharing&ouid=117006809110779909774&rtpof=true&sd=true
 ---
 
 ## ▶️ How to Run the Program
