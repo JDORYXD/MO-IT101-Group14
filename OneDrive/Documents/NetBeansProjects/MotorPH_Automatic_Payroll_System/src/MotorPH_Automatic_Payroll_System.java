@@ -341,8 +341,9 @@ public class MotorPH_Automatic_Payroll_System {
                 
                 String TimeIn = data [3].trim();
                 String TimeOut = data [4].trim();
+                if (TimeIn.isEmpty() || TimeOut.isEmpty()) continue;
                 
-                if (data.length < 5) continue;
+                
                 double worked = calculateWorkedHours(TimeIn, TimeOut);
                 // Compute gross salary
                 double gross = worked * hourlyRate[index];
