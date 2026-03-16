@@ -380,6 +380,10 @@ public class MotorPH_Automatic_Payroll_System {
         return hour + (minute / 60.0); 
     }
     public static double calculateWorkedHours(String TimeIn,String TimeOut){
+        
+        if (TimeIn.isEmpty() || TimeOut.isEmpty()) { 
+        return 0;
+        }
 
     double in = convertToDecimal(TimeIn);
     double out = convertToDecimal(TimeOut);
