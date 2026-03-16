@@ -294,7 +294,7 @@ public class MotorPH_Automatic_Payroll_System {
             empBday[empCount] = data[2].trim();// Employee birthday from employee file
 
             try {
-                hourlyRate[empCount] = Double.parseDouble(data[3].trim());
+                hourlyRate[empCount] = Double.parseDouble(data[data.length - 1].trim());
             } catch (NumberFormatException e) {
                 hourlyRate[empCount] = 0;
             }
