@@ -7,16 +7,14 @@ A Java-based automatic payroll system that manages employee information, attenda
 ## 📌 Team Details
 
 ### Orlando Eria – Payroll Computation
-implemented the primary payroll computation tasks, such as calculating to net pay, gross pay, deductions, and employee worked hours. contributed to the program's general flow, which uses attendance records to compute payroll.
+*Implemented the primary payroll computation tasks, such as calculating to net pay, gross pay, deductions, and employee worked hours. contributed to the program's general flow, which uses attendance records to compute payroll.
+
+*Processed employee attendance information, including time-in and time-out data used to calculate work hours
 
 ### John Vincent Illano – Payroll Computation Support and Program Flow
-Assisted in implementing parts of the payroll computation module and contributed to structuring the program flow to ensure the payroll process runs correctly from data input to salary computation.
+*Assisted in implementing parts of the payroll computation module and contributed to structuring the program flow to ensure the payroll process runs correctly from data input to salary computation.
 
-### Princess Jade Magahis – System Menu and Input Handling
-Created the program menu and handled user input validation so that users could interact with the payroll system and start payroll processing.
-
-### Judessa Caramto – Attendance Data Processing
-Processed employee attendance information, including time-in and time-out data used to calculate work hours.
+*Created the program menu and handled user input validation so that users could interact with the payroll system and start payroll processing.
 
 
 ## 💻 Program Details
