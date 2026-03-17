@@ -6,7 +6,7 @@ A Java-based automatic payroll system that manages employee information, attenda
 
 ## 📌 Team Details
 
-### Orlando Eria – Payroll Computation
+### Orlando Eria – Payroll Computation and Program Flow
 *Implemented the primary payroll computation tasks, such as calculating to net pay, gross pay, deductions, and employee worked hours. contributed to the program's general flow, which uses attendance records to compute payroll.
 
 *Processed employee attendance information, including time-in and time-out data used to calculate work hours
