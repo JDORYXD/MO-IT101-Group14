@@ -72,10 +72,10 @@ public class MotorPH_Automatic_Payroll_System {
 
             if (username.equals(correctEmpUsername) && password == correctPassword) {
                 System.out.println("Login Successful - Welcome Employee ");
-                employeeMenu();
+                EmployeeMenu();
             } else if (username.equals(correctPayUsername) && password == correctPassword) {
                 System.out.println("Login Successful - Welcome Payroll Staff ");
-                payrollMenu();
+                PayrollMenu();
             } else {
                 System.out.println("Incorrect credentials. Exiting...");
                 break;
