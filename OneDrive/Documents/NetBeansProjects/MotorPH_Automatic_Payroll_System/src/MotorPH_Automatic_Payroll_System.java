@@ -12,30 +12,24 @@ import java.io.*;
 import java.util.Scanner;
 public class MotorPH_Automatic_Payroll_System {
     
-    //declaring global scanner for whole program
-    static Scanner input = new Scanner (System.in);
-    
+    //------ Global Scanner -------------//
+    static Scanner input = new Scanner(System.in);
 
-    //------declaring global variables using arrays-------------//
-
-    // Maximum number of employees the system can handle
+    //------ Global arrays -------------//
     static final int MAX = 1000; //1000 max example only
+    static String[] empID = new String[MAX]; // employee ID array
+    static String[] empName = new String[MAX];// employee name array
+    static String[] empBday = new String[MAX];// employee birthday array
+    static double[] hourlyRate = new double[MAX];// employee hourly rate array
 
-    // Arrays to store employee basic information
-    static String[] empID = new String[MAX];       // Stores employee IDs
-    static String[] empName = new String[MAX];     // Stores employee full names
-    static String[] empBday = new String[MAX];     //Stores Birthday
-    static double[] hourlyRate = new double[MAX];  // Stores hourly rate of each employee
+    // 3D arrays: [employee][month][day]
+    static double[][][] cutoff1Hours = new double[MAX][13][15];// cutoff 1 hours: [employee][month][day 1-15]
+    static double[][][] cutoff2Hours = new double[MAX][13][16]; // cutoff 2 hours: [employee][month][day 16-31]
+    static double[][][] cutoff1Gross = new double[MAX][13][15];// cutoff 1 gross: [employee][month][day 1-15]
+    static double[][][] cutoff2Gross = new double[MAX][13][16];// cutoff 2 gross: [employee][month][day 16-31]
 
-    //3D arrays for store store payroll data structured as employee, month, and day
-    static double[][][] cutoff1Hours = new double[MAX][13][15]; 
-    static double[][][] cutoff2Hours = new double[MAX][13][16];
-
-    static double[][][] cutoff1Gross = new double[MAX][13][15];
-    static double[][][] cutoff2Gross = new double[MAX][13][16];
-
-    static int empCount = 0;   // Counts how many employees were loaded
-    static int payrollYear = 0; // Stores the year extracted from attendance
+    static int empCount = 0;// Keeps track of the number workers were loaded from the CSV file
+    static int payrollYear = 0;// Saves the salary year based on the timesheets.
 
     public static void main(String[] args){ 
         
@@ -53,71 +47,42 @@ public class MotorPH_Automatic_Payroll_System {
         }
             
         
-        //---------LOGIN ACCOUNT MENU--------------//
-        while (true){
-            
-        String Correctusername = "employee";
-        String Correctusername1 = "payroll";
-        int Correctpassword = 12345;
-        
-        System.out.println("========LOGIN ACCOUNT MENU==========");
-        System.out.print("Enter Username: ");
-        String Username = input.next();
-        input.nextLine();
-        if (Username.isEmpty()) {
-            System.out.println("Username cannot be empty");
-            continue; 
-        }
-        if (Username.contains(" ")) {
-            System.out.println("Username cannot contain spaces");
-            continue; 
-        }
-        if(Username.length()>9){
-            System.out.println("Username cannot be more than 9 characters");
-            continue; 
-        }
-        else if(Username.length()<5){
-            System.out.println("Username cannot be less than 5 characters");
-            continue; 
-        }   
-        System.out.print("Enter Password: ");
-        String passInput = input.nextLine();
-        if (!passInput.matches("\\d{5}")) {
-        System.out.println("Password must be a 5-digit number");
-        continue;
-        }
-        int Password = Integer.parseInt(passInput);
-        
+        //--------- LOGIN MENU --------------//
+        while (true) {
+            String correctEmpUsername = "employee";
+            String correctPayUsername = "payroll";
+            int correctPassword = 12345;
 
+            System.out.println("\n======== LOGIN ACCOUNT MENU =========");
+            System.out.print("Enter Username: ");
+            String username = input.nextLine().trim();
 
-        if(Username.equals(Correctusername) && Password == Correctpassword){
-            System.out.println("====================================");
-            System.out.println("-----------Log in Successful--------");
-            System.out.println("-------------  Welcome   -----------");
-            System.out.println("====================================");
-            EmployeeMenu();
-            
-            
+            if (username.isEmpty() || username.contains(" ") || username.length() < 5 || username.length() > 9) {
+                System.out.println("Invalid username format.");
+                continue;
+            }
+
+            System.out.print("Enter Password (5 digits): ");
+            String passInput = input.nextLine();
+            if (!passInput.matches("\\d{5}")) {
+                System.out.println("Password must be exactly 5 digits.");
+                continue;
+            }
+            int password = Integer.parseInt(passInput);
+
+            if (username.equals(correctEmpUsername) && password == correctPassword) {
+                System.out.println("Login Successful - Welcome Employee ");
+                employeeMenu();
+            } else if (username.equals(correctPayUsername) && password == correctPassword) {
+                System.out.println("Login Successful - Welcome Payroll Staff ");
+                payrollMenu();
+            } else {
+                System.out.println("Incorrect credentials. Exiting...");
+                break;
+            }
         }
-        else if (Username.equals(Correctusername1) && Password == Correctpassword){
-            System.out.println("====================================");
-            System.out.println("-----------Log in Successful--------");
-            System.out.println("-------------  Welcome   -----------");
-            System.out.println("====================================");
-            PayrollMenu();
-            
-        
-        }
-        else {
-            System.out.println("====================================");
-            System.out.println("Incorrect Username and/or Password  ");
-            System.out.println("Exiting the Program.................");
-            System.out.println("====================================");
-            break; 
-        }    
-        
-        }//end of while (true)
-        
+        System.out.println("Program ending. Closing input...");
+        input.close();
        
     } // end of main String []
 
