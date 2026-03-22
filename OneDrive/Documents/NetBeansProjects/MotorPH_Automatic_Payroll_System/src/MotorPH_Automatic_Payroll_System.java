@@ -454,15 +454,15 @@ public class MotorPH_Automatic_Payroll_System {
 
     
 
-    // ================= GET MONTH NAME =================
-    public static String getMonthName(int month) {
-
-        String[] months = {"", "January", "February", "March", "April",
-                "May", "June", "July", "August",
-                "September", "October", "November", "December"};
-
-        return months[month];
+     //====================================================================
+    // Get month name from number (1-12)
+    //====================================================================
+    static String getMonthName(int month) {
+        String[] months = {"", "January", "February", "March", "April", "May",
+            "June", "July", "August", "September", "October", "November", "December"};
+        return (month >= 1 && month <= 12) ? months[month] : "Unknown";
     }
+
 
     // ================= DEDUCTION METHODS =================
     // SSS contribution based on gross salary / Minimum contribution is 135, Maximum contribution is 1125.
