@@ -209,44 +209,52 @@ public class MotorPH_Automatic_Payroll_System {
     }
 
 
-    // ================= READ EMPLOYEE FILE =================
-    public static void readEmployeeFile(String file) throws Exception {
+    //====================================================================
+    // Reads employee details from CSV, handles missing/invalid data, and stores in arrays
+    //====================================================================
+    static void readEmployeeFile(String filePath) throws Exception {
+        File file = new File(filePath);
+        if (!file.exists() || file.isDirectory()) {
+            System.out.println("Error: Employee file not found or invalid path: " + filePath);
+            return;
+        }
 
-    try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            br.readLine(); // skip header
 
-        String line;
-        br.readLine(); // skip header
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
 
-        while ((line = br.readLine()) != null) {
+                String[] rowData = parseCSVLine(line);
+                if (rowData.length < 19) {
+                    System.out.println("Skipping incomplete employee record.");
+                    continue;   // too short
+                }
+                if (empCount >= MAX) {
+                    break;
+                }
 
-            if (empCount >= MAX) {
-                System.out.println("Maximum employee limit reached.");
-                break;
+                try {
+                    empID[empCount] = rowData[0].trim();
+                    String lastname = rowData[1].trim();
+                    String firstname = rowData[2].trim();
+                    empName[empCount] = firstname + " " + lastname;
+                    empBday[empCount] = rowData[3].trim();
+
+                    String rateStr = rowData[rowData.length - 1].trim().replace(",", "");
+                    hourlyRate[empCount] = Double.parseDouble(rateStr);
+
+                    empCount++;
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid numeric value in employee file. Skipping row.");
+
+                }
             }
-
-            String[] data = line.split(",");
-
-            if (data.length < 4) {
-                System.out.println("Invalid data line: " + line);
-                continue;
-            }
-
-            empID[empCount] = data[0].trim(); // Employee ID from employee file
-            empName[empCount] = data[1].trim();// Employee name from employee file
-            empBday[empCount] = data[2].trim();// Employee birthday from employee file
-
-            try {
-                hourlyRate[empCount] = Double.parseDouble(data[data.length - 1].trim());
-            } catch (NumberFormatException e) {
-                hourlyRate[empCount] = 0;
-            }
-
-            empCount++;
-            //System.out.println("Employees loaded: " + empCount);
         }
     }
-    
-}
 
     //====================================================================
     // Reads attendance records, calculates hours and gross pay, and stores in cutoff arrays
