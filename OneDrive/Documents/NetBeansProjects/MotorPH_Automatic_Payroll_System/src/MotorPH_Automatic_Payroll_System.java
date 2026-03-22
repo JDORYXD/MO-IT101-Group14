@@ -346,11 +346,6 @@ public class MotorPH_Automatic_Payroll_System {
     }
 
     
-    public static double applyGracePeriod(double in){
-        if (in <= 8.1667)
-            return 8;
-        return in;
-    }
     //====================================================================
     // Convert "HH:MM" to decimal hours (e.g., "8:30" -> 8.5)
     //====================================================================
@@ -367,17 +362,13 @@ public class MotorPH_Automatic_Payroll_System {
             return 0;
         }
     }
-    // ================= DISPLAY PAYROLL =================
-    public static void displayPayroll() {
+    static void displayPayroll() {
         for (int i = 0; i < empCount; i++) {
-
-            for (int month = 6; month <= 12; month++) {
-
-        printPayroll(i, month);
-             }//end of for loop for employee
-    }//end of for loop for month
-        }//end of display payroll
-
+            for (int m = 6; m <= 12; m++) {
+                printPayroll(i, m);
+            }
+        }
+    }
     //===========================PRINT PAYROLL ============================//
     static void printPayroll(int i, int month) { 
         System.out.println("\n=================================");
@@ -449,17 +440,16 @@ public class MotorPH_Automatic_Payroll_System {
         
     
 
-    // ================= FIND EMPLOYEE =================
-    public static int findEmployee(String id) {
-
-        // Linear search in empID array
+   //====================================================================
+    // Find employee index by ID
+    //====================================================================
+    static int findEmployee(String id) {
         for (int i = 0; i < empCount; i++) {
-            if (empID[i].trim().equals(id.trim()))
-                return i;  
-                }
-            
-
-        return -1;  
+            if (empID[i] != null && empID[i].equals(id.trim())) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     
