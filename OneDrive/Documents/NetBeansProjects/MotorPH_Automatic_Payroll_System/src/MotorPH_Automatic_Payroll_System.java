@@ -128,88 +128,6 @@ public class MotorPH_Automatic_Payroll_System {
     }
 
     //====================================================================
-    // Employee Menu - allows employee to view their details by entering ID
-    //====================================================================
-    static void employeeMenu() {
-        int choice;
-
-        do {
-            System.out.println("\n======= Employee Display Menu ======");
-            System.out.println("1. Enter Employee ID number");
-            System.out.println("2. Exit the program ");
-            System.out.print("Choose (1 or 2): ");
-
-            while (!input.hasNextInt()) {
-                System.out.println("Invalid input! Please enter a number (1 or 2 only).");
-                System.out.print("Choose (1 or 2  ): ");
-                input.nextLine();
-            }
-
-            choice = input.nextInt();
-            input.nextLine();
-
-            if (choice == 1) {
-                System.out.print("Enter your employee ID number: ");
-                String id = input.nextLine().trim();
-
-                if (id.isEmpty() || id.contains(" ") || id.length() > 9 || id.length() < 5) {
-                    System.out.println("Invalid Employee ID format.");
-                    continue;
-                }
-
-                int index = findEmployee(id);
-                if (index != -1) {
-                    System.out.println("Employee #: " + empID[index]);
-                    System.out.println("Name: " + empName[index]);
-                    System.out.println("Birthday: " + empBday[index]);
-                    System.out.println("Rate: " + hourlyRate[index]);
-                } else {
-                    System.out.println("Employee not found.");
-                }
-            } else if (choice != 2) {
-                System.out.println("!!!Invalid Choice, please choose only number 1 or 2 ");
-            }
-
-        } while (choice != 2);
-
-        System.out.println("Exiting Employee Menu...");
-    }
-    
-     //====================================================================
-    // Payroll Menu - allows payroll to process payroll for one or all employees
-    //====================================================================
-    static void payrollMenu() {
-        int choice;
-
-        do {
-            System.out.println("\n========= PAYROLL MENU ==============");
-            System.out.println("1. Payroll Process");
-            System.out.println("2. Exit the program");
-            System.out.print("Choose (1 or 2): ");
-
-            while (!input.hasNextInt()) {
-                System.out.println("Invalid input! Please enter a number (1 or 2) only.");
-                System.out.print("Choose (1 or 2): ");
-                input.nextLine(); // clear input
-            }
-
-            choice = input.nextInt();
-            input.nextLine();
-
-            if (choice == 1) {
-                processPayroll();
-              /// call payroll processing function
-            } else if (choice != 2) {
-                System.out.println("Invalid choice. Please choose only number (1 or 2)");
-            }
-
-        } while (choice != 2);
-
-        System.out.println("Exiting Payroll Menu...");
-    }
-
-
-    //====================================================================
     // Reads employee details from CSV, handles missing/invalid data, and stores in arrays
     //====================================================================
     static void readEmployeeFile(String filePath) throws Exception {
@@ -345,7 +263,45 @@ public class MotorPH_Automatic_Payroll_System {
         }
     }
 
-    
+    //====================================================================
+    // Time calculation with grace period, lunch break, and max hours
+    //====================================================================
+    static double calculateWorkedHours(String timeIn, String timeOut) {
+        if (timeIn.isEmpty() || timeOut.isEmpty()) {
+            return 0;
+        }
+
+        double in = convertToDecimal(timeIn);
+        double out = convertToDecimal(timeOut);
+
+        // Apply grace period: arrivals at or before 8:10 treated as 8:00 AM
+        if (in <= 8.1667) {
+            in = 8.0;
+        }
+        // Cap working hours within official schedule (8:00 AM - 5:00 PM)
+        if (in < 8) {
+            in = 8;
+        }
+        if (out > 17) {
+            out = 17;
+        }
+
+        double worked = out - in;
+
+        if (worked < 0) {
+            worked = 0;
+        }
+        // Deduct 1 hour for lunch if employee worked across 12–1 PM
+        if (in < 12 && out > 13) {
+            worked -= 1;  // -1 for lunch break
+        }
+        if (worked > 8) {
+            worked = 8; //max 8 hours
+        }
+
+        return worked;
+    }
+
     //====================================================================
     // Convert "HH:MM" to decimal hours (e.g., "8:30" -> 8.5)
     //====================================================================
@@ -362,85 +318,8 @@ public class MotorPH_Automatic_Payroll_System {
             return 0;
         }
     }
-    static void displayPayroll() {
-        for (int i = 0; i < empCount; i++) {
-            for (int m = 6; m <= 12; m++) {
-                printPayroll(i, m);
-            }
-        }
-    }
-    //===========================PRINT PAYROLL ============================//
-    static void printPayroll(int i, int month) { 
-        System.out.println("\n=================================");
-        System.out.println("Employee #: " + empID[i]);
-        System.out.println("Name: " + empName[i]);
-        System.out.println("Birthday: " + empBday[i]);
-        System.out.println("Rate: " + hourlyRate[i]);
-        System.out.println("Month: " + getMonthName(month) + " " + payrollYear);
 
-        // -------- CUTOFF 1 --------
-        //Dispay result for cutoff1
-        System.out.println("\nCutoff Date: " + getMonthName(month) + " 1 to 15, " + payrollYear);
-        
-        // declaring variable for as double
-        double cutoff1HoursWorked = 0;
-        double cutoff1GrossSalary = 0;
-
-        for(int d = 0; d < 15; d++){
-            cutoff1HoursWorked += cutoff1Hours[i][month][d];
-            cutoff1GrossSalary += cutoff1Gross[i][month][d];
-        }
-        double cutoff1Net = cutoff1GrossSalary;
-
-        System.out.printf("Total Hours Worked: %.2f\n", cutoff1HoursWorked);
-        System.out.printf("Gross Salary: %.2f\n", cutoff1GrossSalary);
-        System.out.printf("Net Salary: %.2f\n", cutoff1Net);
-
-        // -------- CUTOFF 2 --------
-        //Display result for cutoff2
-        System.out.println("\nCutoff Date: " + getMonthName(month) + " 16 to 30/31, " + payrollYear);
-
-        double cutoff2HoursWorked = 0;
-        double cutoff2GrossSalary = 0;
-
-        for(int d = 0; d < 16; d++){
-            cutoff2HoursWorked += cutoff2Hours[i][month][d];
-            cutoff2GrossSalary += cutoff2Gross[i][month][d];
-        }
-
-        // declaring Deductions 
-        double sss = computeSSS(cutoff2GrossSalary);
-        double phil = computePhilHealth(cutoff2GrossSalary);
-        double pagibig = computePagibig(cutoff2GrossSalary);
-        double tax = computeTax(cutoff2GrossSalary);
-        
-        //total deductions for government contributions 
-        double totalDeduction = sss + phil + pagibig + tax;
-        double cutoff2Net = cutoff2GrossSalary - totalDeduction;
-        
-        
-        
-        System.out.printf("Total Hours Worked: %.2f\n", cutoff2HoursWorked);
-        System.out.printf("Gross Salary: %.2f\n", cutoff2GrossSalary);
-        System.out.println("\nEach Deduction:");
-        System.out.printf("SSS: %.2f\n", sss);
-        System.out.printf("PhilHealth: %.2f\n" , phil);
-        System.out.printf("Pag-IBIG: %.2f\n" ,pagibig);
-        System.out.printf("Tax: %.2f\n",tax);
-        System.out.printf("Total Deductions: %.2f\n" ,totalDeduction);
-        System.out.printf("Net Salary: %.2f\n", cutoff2Net);
-        
-        // -------- TOTAL MONTHLY NET --------
-        double totalMonthlyNet = cutoff1Net + cutoff2Net;
-
-        System.out.println("\n=================================");
-        System.out.printf("Total Net Salary for the Month: %.2f\n", totalMonthlyNet);
-        System.out.println("=================================");
-}//end of print payroll
-        
-    
-
-   //====================================================================
+    //====================================================================
     // Find employee index by ID
     //====================================================================
     static int findEmployee(String id) {
@@ -452,9 +331,7 @@ public class MotorPH_Automatic_Payroll_System {
         return -1;
     }
 
-    
-
-     //====================================================================
+    //====================================================================
     // Get month name from number (1-12)
     //====================================================================
     static String getMonthName(int month) {
@@ -463,167 +340,273 @@ public class MotorPH_Automatic_Payroll_System {
         return (month >= 1 && month <= 12) ? months[month] : "Unknown";
     }
 
+    //====================================================================
+    // Contribution approximations (semi-monthly basis)
+    //====================================================================
+    public static double computeSSS(double semiGross) {
+        double monthly = semiGross * 2.0;
 
-    // ================= DEDUCTION METHODS =================
-    // SSS contribution based on gross salary / Minimum contribution is 135, Maximum contribution is 1125.
-    public static double computeSSS(double gross) {
-        double salary = gross;
-        if (salary < 3250)
-        return 135.00;
-    else if (salary < 3750)
-        return 157.50;
-    else if (salary < 4250)
-        return 180.00;
-    else if (salary < 4750)
-        return 202.50;
-    else if (salary < 5250)
-        return 225.00;
-    else if (salary < 5750)
-        return 247.50;
-    else if (salary < 6250)
-        return 270.00;
-    else if (salary < 6750)
-        return 292.50;
-    else if (salary < 7250)
-        return 315.00;
-    else if (salary < 7750)
-        return 337.50;
-    else if (salary < 8250)
-        return 360.00;
-    else if (salary < 8750)
-        return 382.50;
-    else if (salary < 9250)
-        return 405.00;
-    else if (salary < 9750)
-        return 427.50;
-    else if (salary < 10250)
-        return 450.00;
-    else if (salary < 10750)
-        return 472.50;
-    else if (salary < 11250)
-        return 495.00;
-    else if (salary < 11750)
-        return 517.50;
-    else if (salary < 12250)
-        return 540.00;
-    else if (salary < 12750)
-        return 562.50;
-    else if (salary < 13250)
-        return 585.00;
-    else if (salary < 13750)
-        return 607.50;
-    else if (salary < 14250)
-        return 630.00;
-    else if (salary < 14750)
-        return 652.50;
-    else if (salary < 15250)
-        return 675.00;
-    else if (salary < 15750)
-        return 697.50;
-    else if (salary < 16250)
-        return 720.00;
-    else if (salary < 16750)
-        return 742.50;
-    else if (salary < 17250)
-        return 765.00;
-    else if (salary < 17750)
-        return 787.50;
-    else if (salary < 18250)
-        return 810.00;
-    else if (salary < 18750)
-        return 832.50;
-    else if (salary < 19250)
-        return 855.00;
-    else if (salary < 19750)
-        return 877.50;
-    else if (salary < 20250)
-        return 900.00;
-    else if (salary < 20750)
-        return 922.50;
-    else if (salary < 21250)
-        return 945.00;
-    else if (salary < 21750)
-        return 967.50;
-    else if (salary < 22250)
-        return 990.00;
-    else if (salary < 22750)
-        return 1012.50;
-    else if (salary < 23250)
-        return 1035.00;
-    else if (salary < 23750)
-        return 1057.50;
-    else if (salary < 24250)
-        return 1080.00;
-    else if (salary < 24750)
-        return 1102.50;
-    else
-        return 1125.00;
-        
-        
+        double sss;
+
+        if (monthly < 3250) {
+            sss = 135.00;
+        } else if (monthly >= 24750) {
+            sss = 1125.00;
+        } else {
+            int step = (int) ((monthly - 3250) / 500);
+            sss = 135.00 + (step * 22.5);
         }
-    // PhilHealth contribution / Minimum contribution is 300, Maximum contribution is 1800.
-    public static double computePhilHealth(double gross) {
 
-        double contribution;
-
-    if (gross <= 10000){ // Minimum contribution = 300
-        contribution = 300;
-    }
-    else if (gross >= 60000){ // Maximum contribution = 1800
-        contribution = 1800;
-    }
-    else{
-        contribution = gross * 0.03; // 3% of gross salary
+        return Math.round((sss / 2) * 100.0) / 100.0;
     }
 
-    return contribution;
+    static double computePhilHealth(double semiGross) {
+        double monthly = semiGross * 2;
+        double monthlyPremium;
+
+        if (monthly <= 10000) {
+            monthlyPremium = 300;
+        } else if (monthly >= 60000) {
+            monthlyPremium = 1800;
+        } else {
+            monthlyPremium = monthly * 0.03;
+        }
+
+        // Employee share (50%)
+        double employeeMonthly = monthlyPremium / 2;
+
+        // Convert to semi-monthly
+        double employeeSemi = employeeMonthly / 2;
+
+        return Math.round(employeeSemi * 100.0) / 100.0;
+    }
+
+    static double computePagibig(double semiGross) {
+        double monthly = semiGross * 2;
+        double monthlyContrib = (monthly <= 1500) ? monthly * 0.01 : monthly * 0.02;
+        double employeeMonthly = Math.min(monthlyContrib, 200);
+        return Math.round(employeeMonthly / 2 * 100.0) / 100.0;
+    }
+
+    static double computeTax(double semiTaxable) {
+        double monthly = semiTaxable * 2.0;
+        double tax;
+
+        if (monthly <= 20832) {
+            tax = 0;
+        } else if (monthly < 33333) {
+            tax = (monthly - 20833) * 0.20;
+        } else if (monthly < 66667) {
+            tax = 2500 + (monthly - 33333) * 0.25;
+        } else if (monthly < 166667) {
+            tax = 10833 + (monthly - 66667) * 0.30;
+        } else if (monthly < 666667) {
+            tax = 40833.33 + (monthly - 166667) * 0.32;
+        } else {
+            tax = 200833.33 + (monthly - 666667) * 0.35;
+        }
+
+        // convert to semi-monthly
+        return Math.round((tax / 2) * 100.0) / 100.0;
+    }
+
+    //====================================================================
+    // Employee Menu - allows employee to view their details by entering ID
+    //====================================================================
+    static void employeeMenu() {
+        int choice;
+
+        do {
+            System.out.println("\n======= Employee Display Menu ======");
+            System.out.println("1. Enter Employee ID number");
+            System.out.println("2. Exit the program ");
+            System.out.print("Choose (1 or 2): ");
+
+            while (!input.hasNextInt()) {
+                System.out.println("Invalid input! Please enter a number (1 or 2 only).");
+                System.out.print("Choose (1 or 2  ): ");
+                input.nextLine();
+            }
+
+            choice = input.nextInt();
+            input.nextLine();
+
+            if (choice == 1) {
+                System.out.print("Enter your employee ID number: ");
+                String id = input.nextLine().trim();
+
+                if (id.isEmpty() || id.contains(" ") || id.length() > 9 || id.length() < 5) {
+                    System.out.println("Invalid Employee ID format.");
+                    continue;
+                }
+
+                int index = findEmployee(id);
+                if (index != -1) {
+                    System.out.println("Employee #: " + empID[index]);
+                    System.out.println("Name: " + empName[index]);
+                    System.out.println("Birthday: " + empBday[index]);
+                    System.out.println("Rate: " + hourlyRate[index]);
+                } else {
+                    System.out.println("Employee not found.");
+                }
+            } else if (choice != 2) {
+                System.out.println("!!!Invalid Choice, please choose only number 1 or 2 ");
+            }
+
+        } while (choice != 2);
+
+        System.out.println("Exiting Employee Menu...");
+    }
+
+    //====================================================================
+    // Payroll Menu - allows payroll to process payroll for one or all employees
+    //====================================================================
+    static void payrollMenu() {
+        int choice;
+
+        do {
+            System.out.println("\n========= PAYROLL MENU ==============");
+            System.out.println("1. Payroll Process");
+            System.out.println("2. Exit the program");
+            System.out.print("Choose (1 or 2): ");
+
+            while (!input.hasNextInt()) {
+                System.out.println("Invalid input! Please enter a number (1 or 2) only.");
+                System.out.print("Choose (1 or 2): ");
+                input.nextLine(); // clear input
+            }
+
+            choice = input.nextInt();
+            input.nextLine();
+
+            if (choice == 1) {
+                processPayroll();
+              /// call payroll processing function
+            } else if (choice != 2) {
+                System.out.println("Invalid choice. Please choose only number (1 or 2)");
+            }
+
+        } while (choice != 2);
+
+        System.out.println("Exiting Payroll Menu...");
+    }
+
+    //====================================================================
+    // Process Payroll - handles payroll processing for one or all employees
+    //====================================================================
+    static void processPayroll() {
+        System.out.println("\n1. One Employee");
+        System.out.println("2. All Employees");
+        System.out.print("Choose (1 or 2): ");
+
+        if (!input.hasNextInt()) {
+            System.out.println("Invalid input.");
+            input.nextLine();
+            return;
+        }
+        int sub = input.nextInt();
+        input.nextLine();
+
+        switch (sub) {
+            case 1 -> {
+                System.out.print("Enter Employee ID: ");
+                String id = input.nextLine().trim();
+                int index = findEmployee(id);
+                if (index == -1) {
+                    System.out.println("Employee not found.");
+                    return;
+                }
+                for (int m = 6; m <= 12; m++) {
+                    printPayroll(index, m);
+                }
+            }
+            case 2 ->
+                displayPayroll(); // call function to display payroll for all employees and months
+            default ->
+                System.out.println("Invalid option.");
+        }
+    }
+
+    //====================================================================
+    // Display Payroll for all employees and months - calls printPayroll for each employee and month 
+    //====================================================================
+    static void displayPayroll() {
+        for (int i = 0; i < empCount; i++) {
+            for (int m = 6; m <= 12; m++) {
+                printPayroll(i, m);
+            }
+        }
+    }
+
+    //====================================================================
+    // Print Payroll details for a specific employee and month, including cutoff 1 and cutoff 2 calculations
+    //====================================================================
+    static void printPayroll(int i, int month) {
+        System.out.println("\n=================================");
+        System.out.println("Employee #: " + empID[i]);
+        System.out.println("Name: " + empName[i]);
+        System.out.println("Birthday: " + empBday[i]);
+        System.out.println("Rate: " + hourlyRate[i]);
+        System.out.println("Month: " + getMonthName(month) + " " + payrollYear);
+
+        // -------- CUTOFF 1 --------
+        // Display cutoff 1 details (hours, gross, net) for the first 15 days of the month
+        System.out.println("\nCutoff Date: " + getMonthName(month) + " 1 to 15, " + payrollYear);
+
+        double cutoff1HoursWorked = 0;
+        double cutoff1GrossSalary = 0;
+        for (int d = 0; d < 15; d++) {
+            cutoff1HoursWorked += cutoff1Hours[i][month][d];// sum hours for cutoff 1 from day 1 to 15
+            cutoff1GrossSalary += cutoff1Gross[i][month][d];// sum gross for cutoff 1 from day 1 to 15
+        }
+        // No deductions applied in cutoff 1 
+        double cutoff1Net = cutoff1GrossSalary;
+
+        System.out.printf("Total Hours Worked: %.2f\n", cutoff1HoursWorked);
+        System.out.printf("Gross Salary: %.2f\n", cutoff1GrossSalary);
+        System.out.printf("Net Salary: %.2f\n", cutoff1Net);
+
+        // -------- CUTOFF 2 --------
+        // Display cutoff 2 details (hours, gross, deductions, net) for the last 16 days of the month
+        System.out.println("\nCutoff Date: " + getMonthName(month) + " 16 to 30/31, " + payrollYear);
+
+        double cutoff2HoursWorked = 0;
+        double cutoff2GrossSalary = 0;
+        for (int d = 0; d < 16; d++) {
+            cutoff2HoursWorked += cutoff2Hours[i][month][d];// sum hours for cutoff 2 from day 16 to end of month
+            cutoff2GrossSalary += cutoff2Gross[i][month][d];// sum gross for cutoff 2 from day 16 to end of month
+        }
+
+        // Calculate deductions based on cutoff 2 gross salary
+        double sssContribution = computeSSS(cutoff2GrossSalary);
+        double philhealthContribution = computePhilHealth(cutoff2GrossSalary);
+        double pagibigContribution = computePagibig(cutoff2GrossSalary);
+        double taxable = cutoff2GrossSalary - sssContribution - philhealthContribution - pagibigContribution;
+        double tax = computeTax(taxable);
+        double totalDeduction = sssContribution + philhealthContribution + pagibigContribution + tax;
+
+        // Total deductions for cutoff 2
+        double cutoff2Net = cutoff2GrossSalary - totalDeduction;
+
+        // Display cutoff 2 details including deductions and net salary
+        System.out.printf("Total Hours Worked: %.2f\n", cutoff2HoursWorked);
+        System.out.printf("Gross Salary: %.2f\n", cutoff2GrossSalary);
+        System.out.println("\nEach Deduction:");
+        System.out.printf("SSS: %.2f\n", sssContribution);
+        System.out.printf("PhilHealth: %.2f\n", philhealthContribution);
+        System.out.printf("Pag-IBIG: %.2f\n", pagibigContribution);
+        System.out.printf("Tax: %.2f\n", tax);
+        System.out.printf("Total Deductions: %.2f\n", totalDeduction);
+        System.out.printf("Net Salary: %.2f\n", cutoff2Net);
+
+        // -------- TOTAL MONTHLY NET --------
+        // Calculate and display total net salary for the month by summing cutoff 1 and cutoff 2 net salaries
+        double totalMonthlyNet = cutoff1Net + cutoff2Net;
+        System.out.println("\n=================================");
+        System.out.printf("Total Net Salary for the Month: %.2f\n", totalMonthlyNet);
+        System.out.println("=================================");
+    }
 }
-    // Pag-IBIG contribution / Maximum contribution is 100.
-    public static double computePagibig(double gross) {
-        double contribution;
-
-    if (gross <= 1500){
-        contribution = gross * 0.01; // 1% of gross salary
-    }
-    else{
-        contribution = gross * 0.02; // 2% of gross salary
-    }
-
-    // maximum contribution is 100
-    if(contribution > 100){
-        contribution = 100;
-    }
-
-    return contribution;
-    }
-    
-    // Tax brackets based on Philippine tax rates
-    public static double computeTax(double gross) {
-        double MonthIncomeBase = gross; 
-        
-        if (MonthIncomeBase <= 20832) {
-        return 0;
-    }
-    else if (MonthIncomeBase <= 33333) {
-        return (MonthIncomeBase - 20833) * 0.20;
-    }
-    else if (MonthIncomeBase <= 66667) {
-        return 2500 + (MonthIncomeBase - 33333) * 0.25;
-    }
-    else if (MonthIncomeBase <= 166667) {
-        return 10833 + (MonthIncomeBase - 66667) * 0.30;
-    }
-    else if (MonthIncomeBase <= 666667) {
-        return 40833.33 + (MonthIncomeBase - 166667) * 0.32;
-    }
-    else {
-        return 200833.33 + (MonthIncomeBase - 666667) * 0.35;
-    }
-        }
-
-    
-           
-}//end of MotorPH_Automatic_Payroll_System
 
 
 
