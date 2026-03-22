@@ -343,51 +343,22 @@ public class MotorPH_Automatic_Payroll_System {
             return 8;
         return in;
     }
-    // ================= CONVERT TIME =================
-    public static double convertToDecimal(String time) {
-
-        String[] t = time.split(":");
-
-        int hour = Integer.parseInt(t[0]);
-        int minute = Integer.parseInt(t[1]);
-
-        // Convert minutes to decimal
-        return hour + (minute / 60.0); 
-    }
-    public static double calculateWorkedHours(String TimeIn,String TimeOut){
-        
-        if (TimeIn.isEmpty() || TimeOut.isEmpty()) { 
-        return 0;
+    //====================================================================
+    // Convert "HH:MM" to decimal hours (e.g., "8:30" -> 8.5)
+    //====================================================================
+    static double convertToDecimal(String time) {
+        String[] parts = time.split(":");
+        if (parts.length != 2) {
+            return 0;
         }
-
-    double in = convertToDecimal(TimeIn);
-    double out = convertToDecimal(TimeOut);
-
-    // Grace period until 8:10
-    if (in <= 8.1667) 
-        in = 8;
-
-    // Only count between 8 AM to 5 PM
-    if (in < 8) in = 8;
-    if (out > 17) out = 17;
-
-    double worked = out - in;
-
-    // Lunch deduction only if employee worked through lunch
-    if (in < 12 && out > 13)
-        worked -= 1;
-
-    if (worked < 0)
-        worked = 0;
-
-    if (worked > 8)
-        worked = 8;
-
-   
-
-    return worked;
-}
-
+        try {
+            int hour = Integer.parseInt(parts[0]);
+            int minutes = Integer.parseInt(parts[1]);
+            return hour + (minutes / 60.0);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
     // ================= DISPLAY PAYROLL =================
     public static void displayPayroll() {
         for (int i = 0; i < empCount; i++) {
