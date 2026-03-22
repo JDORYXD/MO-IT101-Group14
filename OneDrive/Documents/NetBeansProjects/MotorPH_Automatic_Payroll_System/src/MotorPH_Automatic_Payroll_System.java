@@ -149,7 +149,7 @@ public class MotorPH_Automatic_Payroll_System {
                 String[] rowData = parseCSVLine(line);
                 if (rowData.length < 19) {
                     System.out.println("Skipping incomplete employee record.");
-                    continue;   // too short
+                    continue;   
                 }
                 if (empCount >= MAX) {
                     break;
