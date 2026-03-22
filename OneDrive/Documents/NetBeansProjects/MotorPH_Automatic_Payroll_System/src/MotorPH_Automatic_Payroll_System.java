@@ -11,7 +11,7 @@ package motorph.motorph_automatic_payroll_system;
 import java.io.*;
 import java.util.Scanner;
 public class MotorPH_Automatic_Payroll_System {
-    
+
     //------ Global Scanner -------------//
     static Scanner input = new Scanner(System.in);
 
@@ -31,22 +31,16 @@ public class MotorPH_Automatic_Payroll_System {
     static int empCount = 0;// Keeps track of the number workers were loaded from the CSV file
     static int payrollYear = 0;// Saves the salary year based on the timesheets.
 
-    public static void main(String[] args){ 
-        
+    public static void main(String[] args) {
 
         try {
-                //Read employee information file
-                readEmployeeFile("EmployeeDetails.csv");
-           
-           
-                //Read attendance file and log in /log out 
-                readAttendanceFile("AttendanceRecords.csv");
+            readEmployeeFile("EmployeeDetails.csv");
+            readAttendanceFile("AttendanceRecords.csv");
         } catch (Exception e) {
             System.out.println("Error reading files: " + e.getMessage());
-            return; 
+            return;
         }
-            
-        
+
         //--------- LOGIN MENU --------------//
         while (true) {
             String correctEmpUsername = "employee";
@@ -72,10 +66,10 @@ public class MotorPH_Automatic_Payroll_System {
 
             if (username.equals(correctEmpUsername) && password == correctPassword) {
                 System.out.println("Login Successful - Welcome Employee ");
-                EmployeeMenu();
+                employeeMenu();
             } else if (username.equals(correctPayUsername) && password == correctPassword) {
                 System.out.println("Login Successful - Welcome Payroll Staff ");
-                PayrollMenu();
+                payrollMenu();
             } else {
                 System.out.println("Incorrect credentials. Exiting...");
                 break;
@@ -83,153 +77,209 @@ public class MotorPH_Automatic_Payroll_System {
         }
         System.out.println("Program ending. Closing input...");
         input.close();
-       
-    } // end of main String []
 
-    //-----for EmployeeMenu Display-------//
-    static void EmployeeMenu(){
-    int choice = 0;
+    }
 
-    do {
-        System.out.println("\n=======Employee Display Menu======");
-        System.out.println("1. Enter Employee ID number");
-        System.out.println("2. Exit the program ");
-        System.out.println("====================================");
-        System.out.print("Choose (1 or 2): ");
+    //====================================================================
+    // CSV Parsing - handles quoted fields and commas within quotes
+    //====================================================================
+    private static String[] parseCSVLine(String line) {
+        String[] fields = new String[30];   // safe max fields
+        int count = 0;
+        StringBuilder current = new StringBuilder();
+        boolean inQuotes = false;
 
-        if (input.hasNextInt()) {
+        for (int i = 0; i < line.length(); i++) {
+            char ch = line.charAt(i);
+
+            if (ch == '"') {
+                inQuotes = !inQuotes;
+            } else if (ch == ',' && !inQuotes) {
+                if (count < 30) {
+                    fields[count] = current.toString().trim();
+                    count++;
+                }
+                current.setLength(0);
+            } else {
+                current.append(ch);
+            }
+        }
+
+        // Last field
+        if (count < 30) {
+            fields[count] = current.toString().trim();
+            count++;
+        }
+
+        // Clean quotes from each field if wrapped
+        for (int j = 0; j < count; j++) {
+            String field = fields[j];
+            if (field != null && field.length() >= 2 && field.startsWith("\"") && field.endsWith("\"")) {
+                fields[j] = field.substring(1, field.length() - 1).trim();
+            }
+        }
+
+        // Manual array copy (required - no built-in methods used)
+        String[] result = new String[count];
+        for (int j = 0; j < count; j++) {
+            result[j] = fields[j];
+        }
+        return result;
+    }
+
+    //====================================================================
+    // Employee Menu - allows employee to view their details by entering ID
+    //====================================================================
+    static void employeeMenu() {
+        int choice;
+
+        do {
+            System.out.println("\n======= Employee Display Menu ======");
+            System.out.println("1. Enter Employee ID number");
+            System.out.println("2. Exit the program ");
+            System.out.print("Choose (1 or 2): ");
+
+            while (!input.hasNextInt()) {
+                System.out.println("Invalid input! Please enter a number (1 or 2 only).");
+                System.out.print("Choose (1 or 2  ): ");
+                input.nextLine();
+            }
+
             choice = input.nextInt();
             input.nextLine();
-            
-        if (choice >=3){
-            System.out.println("!!!Invalid Choice,please choose only number 1 or 2 ");
-        }
-        }//end for choice 
-        else {
-            System.out.println("Invalid input! Numbers only.");
-            input.next(); 
-            continue;
-        }
 
-        if (choice == 1){
-            System.out.print("Enter your employee ID number: ");
-            String id = input.nextLine();
-            
-            if (id.isEmpty()) {
-                System.out.println("Employee ID cannot be empty");
-            }
-            else if (id.contains(" ")) {
-                System.out.println("Employee ID cannot contain spaces");
-            }
-            else if(id.length()>9){
-                System.out.println("Employee ID cannot be more than 9 characters");
-                
-            }
-            else if(id.length()<5){
-                System.out.println("Employee ID cannot be less than 5 characters");
-            }
-            else {
-                boolean found = false;
-                for (int i = 0; i < empCount; i++) {
-                    if (empID[i].equals(id)) {
-                        System.out.println("Employee #: " + empID[i]);
-                        System.out.println("Name: " + empName[i]);
-                        System.out.println("Birthday: " + empBday[i]);
-                        System.out.println("Rate: " + hourlyRate[i]);
-                        found = true;
-                        break;
-                    }
+            if (choice == 1) {
+                System.out.print("Enter your employee ID number: ");
+                String id = input.nextLine().trim();
+
+                if (id.isEmpty() || id.contains(" ") || id.length() > 9 || id.length() < 5) {
+                    System.out.println("Invalid Employee ID format.");
+                    continue;
                 }
-                if (!found) {
+
+                int index = findEmployee(id);
+                if (index != -1) {
+                    System.out.println("Employee #: " + empID[index]);
+                    System.out.println("Name: " + empName[index]);
+                    System.out.println("Birthday: " + empBday[index]);
+                    System.out.println("Rate: " + hourlyRate[index]);
+                } else {
                     System.out.println("Employee not found.");
                 }
-            }//end of else statement
+            } else if (choice != 2) {
+                System.out.println("!!!Invalid Choice, please choose only number 1 or 2 ");
+            }
 
-            
-        }//end of choice 1
+        } while (choice != 2);
 
-    } while(choice != 2);
-}//End of Employee Menu
+        System.out.println("Exiting Employee Menu...");
+    }
     
-    static void PayrollMenu() {
+     //====================================================================
+    // Payroll Menu - allows payroll to process payroll for one or all employees
+    //====================================================================
+    static void payrollMenu() {
+        int choice;
 
-    int choice = 0;
+        do {
+            System.out.println("\n========= PAYROLL MENU ==============");
+            System.out.println("1. Payroll Process");
+            System.out.println("2. Exit the program");
+            System.out.print("Choose (1 or 2): ");
 
-    do {
+            while (!input.hasNextInt()) {
+                System.out.println("Invalid input! Please enter a number (1 or 2) only.");
+                System.out.print("Choose (1 or 2): ");
+                input.nextLine(); // clear input
+            }
 
-        System.out.println("\n========= PAYROLL MENU ==============");
-        System.out.println("1. Payroll Process");
-        System.out.println("2. Exit the program");
-        System.out.print("Choose (1 or 2): ");
-
-        if (input.hasNextInt()) {
             choice = input.nextInt();
             input.nextLine();
-        } 
-        else {
-            System.out.println("Invalid input! Numbers only.");
-            input.next();
-            continue;
-        }
 
-        switch (choice) {
+            if (choice == 1) {
+                processPayroll();
+              /// call payroll processing function
+            } else if (choice != 2) {
+                System.out.println("Invalid choice. Please choose only number (1 or 2)");
+            }
 
-            case 1 -> processPayroll();
+        } while (choice != 2);
 
-            case 2 -> System.out.println("Exiting Payroll Menu...");
+        System.out.println("Exiting Payroll Menu...");
+    }
 
-            default -> System.out.println("Invalid choice.");
-        }
-
-    } while (choice != 2);
-}// end of payroll menu
-    
-    //------For process payroll display-------//
+    //====================================================================
+    // Process Payroll - handles payroll processing for one or all employees
+    //====================================================================
     static void processPayroll() {
+        System.out.println("\n1. One Employee");
+        System.out.println("2. All Employees");
+        System.out.print("Choose (1 or 2): ");
 
-    System.out.println("\n1. Process payroll (One Employee)");
-    System.out.println("2. Process All Employee Payroll");
-    System.out.print("Choose (1 or 2): ");
-
-    if (!input.hasNextInt()) {
-        System.out.println("Invalid input!");
-        input.next();
-        return;
-    }
-
-    int subChoice = input.nextInt();
-    input.nextLine();
-
-    switch (subChoice) {
-
-        case 1 -> {
-
-            System.out.print("Enter Employee number: ");
-            String searchID = input.nextLine();
-
-            int index = findEmployee(searchID);
-
-            if (index == -1) {
-                System.out.println("Employee not found.");
-                return;
-            }
-
-            System.out.println("\n=================================");
-            System.out.println("Employee #: " + empID[index]);
-            System.out.println("Name: " + empName[index]);
-            System.out.println("Birthday: " + empBday[index]);
-            System.out.println("Rate: " + hourlyRate[index]);
-
-            for (int month = 6; month <= 12; month++) {
-                printPayroll(index, month);
-            }
+        if (!input.hasNextInt()) {
+            System.out.println("Invalid input.");
+            input.nextLine();
+            return;
         }
+        int sub = input.nextInt();
+        input.nextLine();
 
-        case 2 -> displayPayroll();
-
-        default -> System.out.println("Invalid option.");
+        switch (sub) {
+            case 1 -> {
+                System.out.print("Enter Employee ID: ");
+                String id = input.nextLine().trim();
+                int index = findEmployee(id);
+                if (index == -1) {
+                    System.out.println("Employee not found.");
+                    return;
+                }
+                for (int m = 6; m <= 12; m++) {
+                    printPayroll(index, m);
+                }
+            }
+            case 2 ->
+                displayPayroll(); // call function to display payroll for all employees and months
+            default ->
+                System.out.println("Invalid option.");
+        }
     }
-}
+    
+    //====================================================================
+    // Process Payroll - handles payroll processing for one or all employees
+    //====================================================================
+    static void processPayroll() {
+        System.out.println("\n1. One Employee");
+        System.out.println("2. All Employees");
+        System.out.print("Choose (1 or 2): ");
+
+        if (!input.hasNextInt()) {
+            System.out.println("Invalid input.");
+            input.nextLine();
+            return;
+        }
+        int sub = input.nextInt();
+        input.nextLine();
+
+        switch (sub) {
+            case 1 -> {
+                System.out.print("Enter Employee ID: ");
+                String id = input.nextLine().trim();
+                int index = findEmployee(id);
+                if (index == -1) {
+                    System.out.println("Employee not found.");
+                    return;
+                }
+                for (int m = 6; m <= 12; m++) {
+                    printPayroll(index, m);
+                }
+            }
+            case 2 ->
+                displayPayroll(); // call function to display payroll for all employees and months
+            default ->
+                System.out.println("Invalid option.");
+        }
+    }
+
 
 
     // ================= READ EMPLOYEE FILE =================
@@ -271,62 +321,95 @@ public class MotorPH_Automatic_Payroll_System {
     
 }
 
-    // ================= READ ATTENDANCE FILE =================
-    public static void readAttendanceFile(String file) throws Exception {
+    //====================================================================
+    // Reads attendance records, calculates hours and gross pay, and stores in cutoff arrays
+    //====================================================================
+    static void readAttendanceFile(String filePath) throws Exception {
+        File file = new File(filePath);
+        if (!file.exists() || file.isDirectory()) {
+            System.out.println("Error: Attendance file not found: " + filePath);
+            return;
+        }
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            // Uncomment next line if attendance file has header:
+            // br.readLine();
+
             String line;
-            
-            br.readLine(); 
-            
             while ((line = br.readLine()) != null) {
-                
-                String[] data = line.split(",");
-                if (data.length < 5) continue;
-                
-                String id = data[0].trim();  // Employee ID from attendance
-                
-                // Find employee index in our employee array
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
+
+                String[] rowData = parseCSVLine(line);
+                if (rowData.length < 6) {
+                    System.out.println("Skipping malformed attendance row.");
+                    continue;
+                }
+
+                String id = rowData[0].trim();
+                String dateStr = rowData[3].trim();
+                String timeIn = rowData[4].trim();
+                String timeOut = rowData[5].trim();
+
                 int index = findEmployee(id);
-                
-                // If employee not found, skip
-                if (index == -1) continue;
-                
-                // ------------------ DATE PART ------------------
-                String[] dateParts = data[2].split("/"); // date from attendance
-                
-                int month = Integer.parseInt(dateParts[0].trim()); // month from attendance
-                int day = Integer.parseInt(dateParts[1].trim()); //day from attendance
-                int year = Integer.parseInt(dateParts[2].trim()); //year from attendance
-                
-                payrollYear = year;  // Store year 
-                
-                // Only allow June–December
-                if (month < 6 || month > 12) continue;
-                
-                String TimeIn = data [3].trim();
-                String TimeOut = data [4].trim();
-                if (TimeIn.isEmpty() || TimeOut.isEmpty()) continue;
-                
-                
-                double worked = calculateWorkedHours(TimeIn, TimeOut);
-                // Compute gross salary
+                if (index == -1) {
+                    continue;
+                }
+
+                String[] dateParts = dateStr.split("/");
+                if (dateParts.length != 3) {
+                    continue;
+                }
+
+                int month, day, year;
+
+                try {
+                    month = Integer.parseInt(dateParts[0].trim());
+                    day = Integer.parseInt(dateParts[1].trim());
+                    year = Integer.parseInt(dateParts[2].trim());
+
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid date format. Skipping row.");
+                    continue;
+                }
+                if (month < 1 || month > 12 || day < 1 || day > 31) {
+                    System.out.println("Invalid date values. Skipping...");
+                    continue;
+                }
+
+                payrollYear = year;
+
+                if (month < 6 || month > 12) {
+                    continue;
+                }
+                if (timeIn.isEmpty() || timeOut.isEmpty()) {
+                    System.out.println("Missing time data. Skipping...");
+                    continue;
+                }
+
+                double worked = calculateWorkedHours(timeIn, timeOut);
+                if (worked <= 0) {
+                    continue;
+                }
+
                 double gross = worked * hourlyRate[index];
 
-                // ------------------ CUTOFF Section------------------
                 if (day >= 1 && day <= 15) {
                     int d = day - 1;
-                    cutoff1Hours[index][month][d] = worked;
-                    cutoff1Gross[index][month][d] = gross;
-                }
-                else if (day >= 16 && day <= 31) {
+                    cutoff1Hours[index][month][d] = worked; // store hours for cutoff 1 (day 1-15)
+                    cutoff1Gross[index][month][d] = gross;  // store gross for cutoff 1 (day 1-15)
+                } else if (day >= 16 && day <= 31) {
                     int d = day - 16;
-                    cutoff2Hours[index][month][d] = worked;
-                    cutoff2Gross[index][month][d] = gross;
+                    if (d < 16) {
+                        cutoff2Hours[index][month][d] = worked; // store hours for cutoff 2 (day 16-31)
+                        cutoff2Gross[index][month][d] = gross;  // store gross for cutoff 2 (day 16-31)
+                    }
                 }
-            }//end of while
-        }//end of try
-    }//end of read attendance file 
+            }
+        }
+    }
+
     
     public static double applyGracePeriod(double in){
         if (in <= 8.1667)
