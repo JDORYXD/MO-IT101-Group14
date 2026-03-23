@@ -185,8 +185,8 @@ public class MotorPH_Automatic_Payroll_System {
         }
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            // Uncomment next line if attendance file has header:
-            // br.readLine();
+            
+            
 
             String line;
             while ((line = br.readLine()) != null) {
