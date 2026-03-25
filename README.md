@@ -31,11 +31,11 @@ The system allows users to log in either as an **employee** to view payroll deta
 
 - Employee login system with username and 5-digit password  
 - Payroll login for processing and reviewing employee payroll  
-- Handles up to 1000 employees  
+- Handles up to 1000 employees.  
 - Reads employee details from `EmployeeDetails.csv`  
 - Reads attendance records from `AttendanceRecords.csv`  
 - Calculates working hours, gross salary, and net salary  
-- Handles cutoff periods (1–15, 16–31 of each month)  
+- Handles cutoff periods (1–15, 16–31 of each month(June-December) ) 
 - Computes deductions: SSS, PhilHealth, Pag-IBIG, and tax  
 - Displays payroll by employee and by month  
 
