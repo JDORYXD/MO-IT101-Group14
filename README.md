@@ -49,7 +49,7 @@ The system allows users to log in either as an **employee** to view payroll deta
 
 ---
 
-## 📅 Project Plan (Estimation,Project Plan ,QA test)
+## 📅 Project Plan (Estimation,Project Plan ,QA testing)
 
 The project plan and development tasks were discussed and organized internally by the team during the development process.
 
