@@ -497,8 +497,8 @@ public class MotorPH_Automatic_Payroll_System {
     // Process Payroll - handles payroll processing for one or all employees
     //====================================================================
     static void processPayroll() {
-        System.out.println("\n1. One Employee");
-        System.out.println("2. All Employees");
+        System.out.println("\n1. Process One Employee");
+        System.out.println("2. Process All Employees");
         System.out.print("Choose (1 or 2): ");
 
         if (!input.hasNextInt()) {
