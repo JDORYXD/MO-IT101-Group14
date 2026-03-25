@@ -80,9 +80,9 @@ public class MotorPH_Automatic_Payroll_System {
 
     }
 
-    //====================================================================
+    //====================================================================//
     // CSV Parsing - handles quoted fields and commas within quotes
-    //====================================================================
+    //====================================================================//
     private static String[] parseCSVLine(String line) {
         String[] fields = new String[30];   // safe max fields
         int count = 0;
@@ -127,9 +127,9 @@ public class MotorPH_Automatic_Payroll_System {
         return result;
     }
 
-    //====================================================================
+    //====================================================================//
     // Reads employee details from CSV, handles missing/invalid data, and stores in arrays
-    //====================================================================
+    //====================================================================//
     static void readEmployeeFile(String filePath) throws Exception {
         File file = new File(filePath);
         if (!file.exists() || file.isDirectory()) {
