@@ -12,10 +12,10 @@ import java.io.*;
 import java.util.Scanner;
 public class MotorPH_Automatic_Payroll_System {
 
-    //------ Global Scanner -------------//
+    //------ Global Scanner -------------
     static Scanner input = new Scanner(System.in);
 
-    //------ Global arrays -------------//
+    //------ Global arrays -------------
     static final int MAX = 1000; //1000 max example only
     static String[] empID = new String[MAX]; // employee ID array
     static String[] empName = new String[MAX];// employee name array
@@ -23,13 +23,13 @@ public class MotorPH_Automatic_Payroll_System {
     static double[] hourlyRate = new double[MAX];// employee hourly rate array
 
     // 3D arrays: [employee][month][day]
-    static double[][][] cutoff1Hours = new double[MAX][13][15];// cutoff 1 hours: [employee][month][day 1-15]
+    static double[][][] cutoff1Hours = new double[MAX][13][15]; // cutoff 1 hours: [employee][month][day 1-15]
     static double[][][] cutoff2Hours = new double[MAX][13][16]; // cutoff 2 hours: [employee][month][day 16-31]
-    static double[][][] cutoff1Gross = new double[MAX][13][15];// cutoff 1 gross: [employee][month][day 1-15]
-    static double[][][] cutoff2Gross = new double[MAX][13][16];// cutoff 2 gross: [employee][month][day 16-31]
+    static double[][][] cutoff1Gross = new double[MAX][13][15]; // cutoff 1 gross: [employee][month][day 1-15]
+    static double[][][] cutoff2Gross = new double[MAX][13][16]; // cutoff 2 gross: [employee][month][day 16-31]
 
-    static int empCount = 0;// Keeps track of the number workers were loaded from the CSV file
-    static int payrollYear = 0;// Saves the salary year based on the timesheets.
+    static int empCount = 0; // Keeps track of the number workers were loaded from the CSV file
+    static int payrollYear = 0; // Saves the salary year based on the timesheets.
 
     public static void main(String[] args) {
 
@@ -41,7 +41,7 @@ public class MotorPH_Automatic_Payroll_System {
             return;
         }
 
-        //--------- LOGIN MENU --------------//
+        //--------- LOGIN MENU --------------
         while (true) {
             String correctEmpUsername = "employee";
             String correctPayUsername = "payroll";
@@ -80,9 +80,9 @@ public class MotorPH_Automatic_Payroll_System {
 
     }
 
-    //====================================================================//
+    //====================================================================
     // CSV Parsing - handles quoted fields and commas within quotes
-    //====================================================================//
+    //====================================================================
     private static String[] parseCSVLine(String line) {
         String[] fields = new String[30];   // safe max fields
         int count = 0;
@@ -127,9 +127,9 @@ public class MotorPH_Automatic_Payroll_System {
         return result;
     }
 
-    //====================================================================//
+    //====================================================================
     // Reads employee details from CSV, handles missing/invalid data, and stores in arrays
-    //====================================================================//
+    //====================================================================
     static void readEmployeeFile(String filePath) throws Exception {
         File file = new File(filePath);
         if (!file.exists() || file.isDirectory()) {
