@@ -482,8 +482,8 @@ public class MotorPH_Automatic_Payroll_System {
             input.nextLine();
 
             if (choice == 1) {
-                processPayroll();
-              /// call payroll processing function
+                processPayroll(); // call payroll processing function
+              
             } else if (choice != 2) {
                 System.out.println("Invalid choice. Please choose only number (1 or 2)");
             }
