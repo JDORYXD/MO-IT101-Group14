@@ -37,7 +37,7 @@ The system allows users to log in either as an **employee** to view payroll deta
 - Calculates working hours, gross salary, and net salary  
 - Handles cutoff periods (1–15, 16–31 of each month(June-December) ) 
 - Computes deductions: SSS, PhilHealth, Pag-IBIG, and tax  
-- Displays payroll by employee and by month  
+- Displays payroll by employee and by month  ( June - December 2024 )
 
 ---
 
