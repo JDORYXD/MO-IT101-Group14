@@ -1,3 +1,10 @@
+This project has already been graded . thanks for you contributions for the readme file.
+
+
+
+
+
+
 # MotorPH Automatic Payroll System
 
 A Java-based automatic payroll system that manages employee information, attendance records, and payroll calculations. This system demonstrates core programming skills, file handling, and payroll computation logic including SSS, PhilHealth, Pag-IBIG, and tax deductions.
